@@ -1,32 +1,38 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import {
   BaseEntity,
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
 import { TIMESTAMP_TYPE } from "../../utility/constance";
-// const uuid = require("uuid");
+import { GameList } from "./game-list.entity";
+import { User } from "./user.entity";
+
 @Entity()
-export class User extends BaseEntity {
+export class ListPackOfGame extends BaseEntity {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @Column({ unique: true })
-  email: string;
+  // eslint-disable-next-line arrow-parens
+  @ManyToOne((type) => User, { nullable: false })
+  creator: User;
+
+  // eslint-disable-next-line arrow-parens
+  @ManyToOne((type) => GameList, (game) => game.slug, { nullable: false })
+  belongTo: string;
 
   @Column()
-  password: string;
+  name: string;
 
   @Column()
-  fname: string;
+  price: number;
 
   @Column()
-  lname: string;
-
-  @Column()
-  avatar: string;
+  accumulate: number;
 
   @Column({ type: TIMESTAMP_TYPE, default: () => "CURRENT_TIMESTAMP" })
   @CreateDateColumn({ type: TIMESTAMP_TYPE })
@@ -36,6 +42,3 @@ export class User extends BaseEntity {
   @UpdateDateColumn({ type: TIMESTAMP_TYPE })
   updatedAt: Date;
 }
-
-// This line is required. It will be used to create the SQL session table later in the tutorial.
-export { DatabaseSession } from "@foal/typeorm";
