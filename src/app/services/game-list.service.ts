@@ -1,4 +1,4 @@
-import { HttpResponseOK } from "@foal/core";
+import { HttpResponseNotFound, HttpResponseOK } from "@foal/core";
 import { GameList, User } from "../entities";
 
 export class GameListService {
@@ -21,7 +21,6 @@ export class GameListService {
     }
 
     const stories = await queryBuilder.getMany();
-
     return new HttpResponseOK(stories);
   }
 
@@ -32,5 +31,13 @@ export class GameListService {
     });
     await GameList.save(data);
     return new HttpResponseOK(data);
+  }
+
+  async edit(id: string, title: string) {
+    const data = await GameList.findOne({ id });
+    if (!data) return new HttpResponseNotFound();
+    data.title = title;
+    await GameList.update(id, data);
+    return new HttpResponseOK();
   }
 }

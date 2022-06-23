@@ -6,6 +6,7 @@ import {
   HttpResponseNoContent,
   HttpResponseNotFound,
   Post,
+  Put,
   ValidateBody,
   ValidatePathParam,
   ValidateQueryParam,
@@ -54,4 +55,21 @@ export class GameListController {
 
     return new HttpResponseNoContent();
   }
+
+  @Put()
+  @ValidateBody({
+    type: "object",
+    properties: {
+      id: { type: "string" },
+      title: { type: "string", maxLength: 255 },
+    },
+    require: ["title", "id"],
+    additionalProperties: false,
+  })
+  @JWTRequired()
+  async editGame(ctx: Context) {
+    return this.SGameList.edit(ctx.request.body.id, ctx.request.body.title);
+  }
+
+  //Post new game l
 }
